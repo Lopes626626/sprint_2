@@ -1,20 +1,52 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+
+import ListaRegistrosScreen from "./src/screens/ListaRegistrosScreen";
+import CadastroRegistroScreen from "./src/screens/CadastroRegistroScreen";
+import DetalheRegistroScreen from "./src/screens/DetalheRegistroScreen";
+
+const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator
+        screenOptions={{
+          headerStyle: {
+            backgroundColor: "#2563EB",
+          },
+
+          headerTintColor: "#fff",
+
+          headerTitleStyle: {
+            fontWeight: "bold",
+          },
+        }}
+      >
+        <Stack.Screen
+          name="Lista"
+          component={ListaRegistrosScreen}
+          options={{
+            title: "Registros Industriais",
+          }}
+        />
+
+        <Stack.Screen
+          name="Cadastro"
+          component={CadastroRegistroScreen}
+          options={{
+            title: "Novo Registro",
+          }}
+        />
+
+        <Stack.Screen
+          name="Detalhe"
+          component={DetalheRegistroScreen}
+          options={{
+            title: "Detalhes do Registro",
+          }}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
