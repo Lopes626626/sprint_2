@@ -1,29 +1,30 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, ActivityIndicator, StyleSheet, Alert } from 'react-native';
 import { ocorrenciaService } from '../services/ocorrenciaService';
+import { RegistroIndustrial } from '../types/RegistroIndustrial';
 
 export default function CadastroRegistroScreen({ navigation }: any) {
-    // ATENÇÃO: Crie os estados de acordo com os atributos do seu RegistroIndustrial
-    const [campoExemplo1, setCampoExemplo1] = useState('');
-    const [campoExemplo2, setCampoExemplo2] = useState('');
+    const [nome, setNome] = useState('');
+    const [descricao, setDescricao] = useState('');
+    const [status, setStatus] = useState<RegistroIndustrial['status']>('normal');
+    const [dataStr, setDataStr] = useState('');
     const [loading, setLoading] = useState(false);
 
     const handleSalvar = async () => {
         try {
             setLoading(true);
-            
-            // Monta o objeto Omit<RegistroIndustrial, 'id'>
             const novaOcorrencia = {
-                // substitua pelas suas variaveis reais aqui:
-                atributo1: campoExemplo1,
-                atributo2: campoExemplo2
+                nome,
+                descricao,
+                status,
+                data: dataStr
             };
-
-            await ocorrenciaService.criar(novaOcorrencia as any);
-            Alert.alert("Sucesso", "Registro criado com sucesso!");
-            navigation.goBack(); // Volta para a lista
+            
+            await ocorrenciaService.criar(novaOcorrencia);
+            Alert.alert("Sucesso", "Registro criado!");
+            navigation.goBack();
         } catch (error) {
-            Alert.alert("Erro", "Não foi possível salvar o registro no backend.");
+            Alert.alert("Erro", "Falha ao salvar no backend.");
         } finally {
             setLoading(false);
         }
@@ -31,24 +32,27 @@ export default function CadastroRegistroScreen({ navigation }: any) {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.label}>Campo 1 (Altere o nome):</Text>
+            <Text style={styles.label}>Nome:</Text>
+            <TextInput style={styles.input} value={nome} onChangeText={setNome} placeholder="Ex: Motor Principal" />
+
+            <Text style={styles.label}>Descrição:</Text>
+            <TextInput style={styles.input} value={descricao} onChangeText={setDescricao} placeholder="Ex: Superaquecimento" />
+
+            <Text style={styles.label}>Status (normal, alerta, critico):</Text>
             <TextInput 
                 style={styles.input} 
-                value={campoExemplo1} 
-                onChangeText={setCampoExemplo1} 
+                value={status} 
+                onChangeText={(text) => setStatus(text as RegistroIndustrial['status'])} 
+                autoCapitalize="none"
             />
 
-            <Text style={styles.label}>Campo 2 (Altere o nome):</Text>
-            <TextInput 
-                style={styles.input} 
-                value={campoExemplo2} 
-                onChangeText={setCampoExemplo2} 
-            />
+            <Text style={styles.label}>Data:</Text>
+            <TextInput style={styles.input} value={dataStr} onChangeText={setDataStr} placeholder="Ex: 2026-08-23" />
 
             {loading ? (
                 <ActivityIndicator size="large" color="#0000ff" />
             ) : (
-                <Button title="Salvar Ocorrência" onPress={handleSalvar} />
+                <Button title="Salvar Registro" onPress={handleSalvar} />
             )}
         </View>
     );

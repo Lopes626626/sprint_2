@@ -15,17 +15,14 @@ export default function ListaRegistrosScreen({ navigation }: any) {
             const dados = await ocorrenciaService.listar();
             setRegistros(dados);
         } catch (error) {
-            setErro("Erro ao conectar com o backend. O servidor está rodando?");
+            setErro("Erro ao conectar com a API.");
         } finally {
             setLoading(false);
         }
     };
 
     useEffect(() => {
-        // Usa um listener para recarregar a tela toda vez que ela ganha foco (ex: ao voltar do cadastro)
-        const unsubscribe = navigation.addListener('focus', () => {
-            carregarDados();
-        });
+        const unsubscribe = navigation.addListener('focus', carregarDados);
         return unsubscribe;
     }, [navigation]);
 
@@ -40,20 +37,16 @@ export default function ListaRegistrosScreen({ navigation }: any) {
 
     return (
         <View style={styles.container}>
-            <Button title="Nova Ocorrência" onPress={() => navigation.navigate('CadastroRegistro')} />
+            <Button title="Novo Registro" onPress={() => navigation.navigate('CadastroRegistro')} />
             <FlatList
                 data={registros}
                 keyExtractor={(item) => item.id.toString()}
                 contentContainerStyle={{ marginTop: 16 }}
                 renderItem={({ item }) => (
-                    <TouchableOpacity 
-                        style={styles.card}
-                        onPress={() => navigation.navigate('DetalheRegistro', { id: item.id })}
-                    >
-                        <Text style={styles.titulo}>ID: {item.id}</Text>
-                        {/* SUBSTITUA OS CAMPOS ABAIXO PELOS SEUS REAIS */}
-                        <Text>Altere para sua variável 1</Text>
-                        <Text>Altere para sua variável 2</Text>
+                    <TouchableOpacity style={styles.card} onPress={() => navigation.navigate('DetalheRegistro', { id: item.id })}>
+                        <Text style={styles.titulo}>{item.nome}</Text>
+                        <Text>Status: {item.status}</Text>
+                        <Text>Data: {item.data}</Text>
                     </TouchableOpacity>
                 )}
             />
@@ -64,7 +57,7 @@ export default function ListaRegistrosScreen({ navigation }: any) {
 const styles = StyleSheet.create({
     container: { flex: 1, padding: 16, backgroundColor: '#f5f5f5' },
     center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-    card: { padding: 16, backgroundColor: '#fff', borderBottomWidth: 1, borderColor: '#ccc', marginBottom: 8, borderRadius: 8 },
-    erroText: { color: 'red', textAlign: 'center', fontWeight: 'bold', marginBottom: 16 },
-    titulo: { fontSize: 16, fontWeight: 'bold' }
+    card: { padding: 16, backgroundColor: '#fff', borderWidth: 1, borderColor: '#ccc', marginBottom: 8, borderRadius: 8 },
+    erroText: { color: 'red', textAlign: 'center', marginBottom: 16 },
+    titulo: { fontSize: 16, fontWeight: 'bold', marginBottom: 4 }
 });
